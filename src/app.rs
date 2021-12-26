@@ -24,7 +24,7 @@ impl Default for TemplateApp {
 
 impl epi::App for TemplateApp {
     fn name(&self) -> &str {
-        "eframe template"
+        "laravel decrypt"
     }
 
     /// Called once before the first frame.
@@ -97,10 +97,10 @@ impl epi::App for TemplateApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             // The central panel the region left after adding TopPanel's and SidePanel's
 
-            ui.heading("eframe template");
-            ui.hyperlink("https://github.com/emilk/eframe_template");
+            ui.heading("laravel decrypt");
+            ui.hyperlink("https://github.com/sakti/laravel_decrypt");
             ui.add(egui::github_link_file!(
-                "https://github.com/emilk/eframe_template/blob/master/",
+                "https://github.com/sakti/laravel_decrypt/tree/master",
                 "Source code."
             ));
             egui::warn_if_debug_build(ui);
