@@ -5,27 +5,25 @@ use crate::{decrypt, parse_ciphertext};
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[cfg_attr(feature = "persistence", derive(serde::Deserialize, serde::Serialize))]
 #[cfg_attr(feature = "persistence", serde(default))] // if we add new fields, give them default values when deserializing old state
-pub struct TemplateApp {
-    // Example stuff:
+pub struct LaravelDecryptApp {
     cipherkey: String,
     ciphertext: String,
     result: String,
 }
 
-impl Default for TemplateApp {
+impl Default for LaravelDecryptApp {
     fn default() -> Self {
         Self {
-            // Example stuff:
-            cipherkey: "Hello World!".to_owned(),
-            ciphertext: "".to_owned(),
+            cipherkey: "input your cipher key".to_owned(),
+            ciphertext: "input encrypted value".to_owned(),
             result: "result".to_owned(),
         }
     }
 }
 
-impl epi::App for TemplateApp {
+impl epi::App for LaravelDecryptApp {
     fn name(&self) -> &str {
-        "laravel decrypt"
+        "Laravel Decrypt"
     }
 
     /// Called once before the first frame.

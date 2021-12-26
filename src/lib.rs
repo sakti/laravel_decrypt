@@ -7,7 +7,7 @@ use block_modes::{block_padding::Pkcs7, BlockMode, Cbc};
 use serde::Deserialize;
 
 mod app;
-pub use app::TemplateApp;
+pub use app::LaravelDecryptApp;
 
 pub type Aes256Cbc = Cbc<Aes256, Pkcs7>;
 
@@ -71,6 +71,6 @@ use eframe::wasm_bindgen::{self, prelude::*};
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen]
 pub fn start(canvas_id: &str) -> Result<(), eframe::wasm_bindgen::JsValue> {
-    let app = TemplateApp::default();
+    let app = LaravelDecryptApp::default();
     eframe::start_web(canvas_id, Box::new(app))
 }
