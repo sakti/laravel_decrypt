@@ -4,3 +4,6 @@ wasm:
 
 build-wasm:
 	./build_web.sh
+
+setup-wasm:
+	./setup_web.sh
