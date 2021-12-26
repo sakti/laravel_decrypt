@@ -2,7 +2,7 @@
 name = "laravel_decrypt"
 version = "0.1.0"
 authors = ["Sakti Dwi Cahyono <saktidc@icloud.com>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -10,13 +10,16 @@ edition = "2018"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+aes = "0.7.5"
+base64 = "0.13.0"
+block-modes = "0.8.1"
 eframe = "0.15.0" # Gives us egui, epi and web+native backends
-
-serde = { version = "1", features = ["derive"], optional = true }
+serde = {version = "1", features = ["derive"]}
+serde_json = "1"
 
 [features]
 default = []
-persistence = ["eframe/persistence", "serde"] # Enable if you want to persist app state on shutdown
+persistence = ["eframe/persistence"] # Enable if you want to persist app state on shutdown
 
 [profile.release]
 opt-level = 2 # fast and small wasm

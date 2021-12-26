@@ -1,5 +1,7 @@
 use eframe::{egui, epi};
 
+use crate::{decrypt, parse_ciphertext};
+
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[cfg_attr(feature = "persistence", derive(serde::Deserialize, serde::Serialize))]
 #[cfg_attr(feature = "persistence", serde(default))] // if we add new fields, give them default values when deserializing old state
@@ -52,7 +54,7 @@ impl epi::App for TemplateApp {
     /// Put your widgets into a `SidePanel`, `TopPanel`, `CentralPanel`, `Window` or `Area`.
     fn update(&mut self, ctx: &egui::CtxRef, _frame: &mut epi::Frame<'_>) {
         let Self {
-            cipherkey: cipher_key,
+            cipherkey,
             ciphertext,
             result,
         } = self;
@@ -108,7 +110,7 @@ impl epi::App for TemplateApp {
             ));
             ui.horizontal(|ui| {
                 ui.label("Cipher Key: ");
-                ui.text_edit_multiline(cipher_key);
+                ui.text_edit_multiline(cipherkey);
             });
 
             ui.horizontal(|ui| {
@@ -117,7 +119,48 @@ impl epi::App for TemplateApp {
             });
 
             if ui.button("Decrypt").clicked() {
-                *result = "hasil bla bla bla".to_string();
+                if cipherkey.is_empty() {
+                    *result = "err: cipher key is empty".to_owned();
+                    return;
+                }
+                if ciphertext.is_empty() {
+                    *result = "err: ciphertext is empty".to_owned();
+                    return;
+                }
+                let key = match base64::decode(cipherkey) {
+                    Ok(v) => v,
+                    Err(e) => {
+                        *result = e.to_string();
+                        return;
+                    }
+                };
+
+                let cipherobj = parse_ciphertext(ciphertext);
+                if cipherobj.is_err() {
+                    *result = cipherobj.err().unwrap();
+                    return;
+                }
+                let cipherobj = cipherobj.unwrap();
+                let value = cipherobj.get_value();
+                if value.is_err() {
+                    *result = value.err().unwrap();
+                    return;
+                }
+                let value = value.unwrap();
+                let iv = cipherobj.get_iv();
+                if iv.is_err() {
+                    *result = iv.err().unwrap();
+                    return;
+                }
+                let iv = iv.unwrap();
+                let plaintext = match decrypt(key, value, iv) {
+                    Ok(v) => v,
+                    Err(e) => {
+                        *result = e;
+                        return;
+                    }
+                };
+                *result = plaintext;
                 println!("test clicked")
             }
 
