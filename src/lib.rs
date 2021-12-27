@@ -51,7 +51,6 @@ pub fn parse_ciphertext(ciphertext: &str) -> Result<LaravelEncryptedData, String
         Ok(v) => v,
         Err(_) => return Err("failed to decode base64".to_owned()),
     };
-    println!("{}", String::from_utf8_lossy(&payload));
     match serde_json::from_slice(&payload) {
         Ok(v) => Ok(v),
         Err(e) => Err(e.to_string()),
