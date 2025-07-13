@@ -1,4 +1,4 @@
-use eframe::{egui, epi};
+use eframe::egui;
 
 use crate::{decrypt, parse_ciphertext};
 
@@ -21,36 +21,34 @@ impl Default for LaravelDecryptApp {
     }
 }
 
-impl epi::App for LaravelDecryptApp {
-    fn name(&self) -> &str {
-        "Laravel Decrypt"
-    }
-
+impl LaravelDecryptApp {
     /// Called once before the first frame.
-    fn setup(
-        &mut self,
-        _ctx: &egui::CtxRef,
-        _frame: &mut epi::Frame<'_>,
-        _storage: Option<&dyn epi::Storage>,
-    ) {
+    pub fn new(_cc: &eframe::CreationContext<'_>) -> Self {
+        // This is also where you can customize the look and feel of egui using
+        // `cc.egui_ctx.set_visuals` and `cc.egui_ctx.set_fonts`.
+
         // Load previous app state (if any).
         // Note that you must enable the `persistence` feature for this to work.
         #[cfg(feature = "persistence")]
-        if let Some(storage) = _storage {
-            *self = epi::get_value(storage, epi::APP_KEY).unwrap_or_default()
+        if let Some(storage) = _cc.storage {
+            return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
         }
-    }
 
-    /// Called by the frame work to save state before shutdown.
+        Default::default()
+    }
+}
+
+impl eframe::App for LaravelDecryptApp {
+    /// Called by the framework to save state before shutdown.
     /// Note that you must enable the `persistence` feature for this to work.
     #[cfg(feature = "persistence")]
-    fn save(&mut self, storage: &mut dyn epi::Storage) {
-        epi::set_value(storage, epi::APP_KEY, self);
+    fn save(&mut self, storage: &mut dyn eframe::Storage) {
+        eframe::set_value(storage, eframe::APP_KEY, self);
     }
 
     /// Called each time the UI needs repainting, which may be many times per second.
     /// Put your widgets into a `SidePanel`, `TopPanel`, `CentralPanel`, `Window` or `Area`.
-    fn update(&mut self, ctx: &egui::CtxRef, _frame: &mut epi::Frame<'_>) {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         let Self {
             cipherkey,
             ciphertext,
@@ -123,7 +121,7 @@ impl epi::App for LaravelDecryptApp {
                 ui.label("Plaintext: ");
                 ui.label(result.clone());
                 if ui.button("📋").on_hover_text("Click to copy").clicked() {
-                    ui.output().copied_text = result.to_owned();
+                    ui.ctx().copy_text(result.to_owned());
                 }
             });
 

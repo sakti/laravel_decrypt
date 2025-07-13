@@ -4,8 +4,11 @@
 
 // When compiling natively:
 #[cfg(not(target_arch = "wasm32"))]
-fn main() {
-    let app = laravel_decrypt::LaravelDecryptApp::default();
+fn main() -> eframe::Result<()> {
     let native_options = eframe::NativeOptions::default();
-    eframe::run_native(Box::new(app), native_options);
+    eframe::run_native(
+        "Laravel Decrypt",
+        native_options,
+        Box::new(|cc| Ok(Box::new(laravel_decrypt::LaravelDecryptApp::new(cc)))),
+    )
 }

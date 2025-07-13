@@ -3,7 +3,7 @@
 #![warn(clippy::all, rust_2018_idioms)]
 
 use aes::Aes256;
-use block_modes::{block_padding::Pkcs7, BlockMode, Cbc};
+use block_modes::{BlockMode, Cbc, block_padding::Pkcs7};
 use serde::Deserialize;
 
 mod app;
@@ -70,6 +70,10 @@ use eframe::wasm_bindgen::{self, prelude::*};
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen]
 pub fn start(canvas_id: &str) -> Result<(), eframe::wasm_bindgen::JsValue> {
-    let app = LaravelDecryptApp::default();
-    eframe::start_web(canvas_id, Box::new(app))
+    let web_options = eframe::WebOptions::default();
+    eframe::start_web(
+        canvas_id,
+        web_options,
+        Box::new(|cc| Ok(Box::new(LaravelDecryptApp::new(cc)))),
+    )
 }
